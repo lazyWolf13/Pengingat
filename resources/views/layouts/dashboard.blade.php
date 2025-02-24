@@ -26,10 +26,14 @@
     <!-- Sidebar dengan scroll -->
     <aside class="w-64 bg-gradient-to-t from-blue-300 to-blue-200 text-gray-900 p-6 fixed top-0 left-0 h-screen shadow-lg overflow-y-auto">
       <h2 class="text-3xl font-extrabold tracking-wide mb-6 text-blue-800">Dashboard</h2>
+      
+      <!-- Tombol Dashboard -->
+      <a href="dashboard" class="block py-3 px-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 shadow-md text-center mb-6">🏠 Dashboard</a>
+      
       <nav class="space-y-4">
         <!-- Menu User & Admin -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">User Management</h3>
-        <a href="admin_users" class="block py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600">👤 Kelola Admin</a>
+        <a href="{{ route('admin.index') }}" class="block py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600">👤 Kelola Admin</a>
         <a href="users" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">👥 Kelola Pengguna</a>
 
         <!-- Menu Absensi -->

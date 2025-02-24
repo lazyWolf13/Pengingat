@@ -26,17 +26,26 @@ class LoginController extends Controller
         // Cek login sebagai admin_user
         $admin = AdminUser::where('email', $request->email)->first();
         if ($admin && Hash::check($request->password, $admin->password)) {
-            Auth::guard('web')->login($admin);
+            Auth::login($admin);
             return redirect()->route('admin.dashboard');
         }
 
         // Cek login sebagai user
         $user = User::where('email', $request->email)->first();
         if ($user && Hash::check($request->password, $user->password)) {
-            Auth::guard('web')->login($user);
+            Auth::login($user);
             return redirect()->route('user.dashboard');
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.']);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login')->with('status', 'Logout berhasil!');
     }
 }
