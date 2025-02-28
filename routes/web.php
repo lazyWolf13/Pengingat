@@ -14,21 +14,28 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
 
-use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\UserController;
 
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/admin_users', [AdminUserController::class, 'index'])->name('admin.index');
-    Route::get('/create', [AdminUserController::class, 'create'])->name('admin.create');
-    Route::post('/', [AdminUserController::class, 'store'])->name('admin.store');
-    Route::get('/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.edit');
-    Route::put('/{id}', [AdminUserController::class, 'update'])->name('admin.update');
-    Route::delete('/{id}', [AdminUserController::class, 'destroy'])->name('admin.destroy');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/adminuser', [AdminUserController::class, 'index'])->name('adminusers.index');
+    Route::get('/adminuser/create', [AdminUserController::class, 'create'])->name('adminusers.create');
+    Route::post('/adminuser', [AdminUserController::class, 'store'])->name('adminusers.store');
+    Route::get('/adminuser/{adminuser}/edit', [AdminUserController::class, 'edit'])->name('adminusers.edit');
+    Route::put('/adminuser/{adminuser}', [AdminUserController::class, 'update'])->name('adminusers.update');
+    Route::delete('/adminuser/{adminuser}', [AdminUserController::class, 'destroy'])->name('adminusers.destroy');
+    Route::resource('users', UserController::class);
+    Route::get('/user', function () {
+        $users = \App\Models\User::all();
+        return view('admin.user', compact('users'));
+    })->name('users.index');
+    
+    Route::get('/user/create', function () {
+        return view('admin.usercreate');
+    })->name('users.create');
+
+    Route::resource('adminuser', AdminUserController::class, ['names' => 'adminusers']);
 });
-
-
-
-
-
 
 Route::get('/user/dashboard', function () {
     return view('user.dashboard');
