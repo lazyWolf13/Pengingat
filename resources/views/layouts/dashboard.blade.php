@@ -33,8 +33,8 @@
       <nav class="space-y-4">
         <!-- Menu User & Admin -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">User Management</h3>
-        <a href="{{ route('admin.index') }}" class="block py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600">👤 Kelola Admin</a>
-        <a href="users" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">👥 Kelola Pengguna</a>
+        <a href="/admin/adminuser" class="block py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600">👤 Kelola Admin</a>
+        <a href="/admin/user" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">👥 Kelola Pengguna</a>
 
         <!-- Menu Absensi -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
