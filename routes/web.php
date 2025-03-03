@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AdminDashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -10,12 +11,12 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AttendanceSummaryController;
+use App\Http\Controllers\Admin\ProfileController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/adminuser', [AdminUserController::class, 'index'])->name('adminusers.index');
@@ -35,6 +36,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
     })->name('users.create');
 
     Route::resource('adminuser', AdminUserController::class, ['names' => 'adminusers']);
+    Route::resource('summaries', AttendanceSummaryController::class);
+
+    // Route untuk Attendance Summary
+    Route::get('summaries', [AttendanceSummaryController::class, 'index'])->name('summaries.index');
+    Route::get('summaries/create', [AttendanceSummaryController::class, 'create'])->name('summariescreate.create');
+    Route::post('summaries', [AttendanceSummaryController::class, 'store'])->name('summaries.store');
+    Route::get('summaries/{attendanceSummary}/edit', [AttendanceSummaryController::class, 'edit'])->name('summaries.edit');
+    Route::put('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'update'])->name('summaries.update');
+    Route::delete('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'destroy'])->name('summaries.destroy');
+
+    Route::resource('profiles', ProfileController::class);
+    // Menampilkan daftar profil
+    Route::get('profiles', [ProfileController::class, 'index'])->name('profiles.index');
+    Route::get('profiles/create', [ProfileController::class, 'create'])->name('profilescreate.create');
+    Route::post('profiles', [ProfileController::class, 'store'])->name('profilescreate.store');
+    Route::get('profiles/{profile}/edit', [ProfileController::class, 'edit'])->name('profilesedit.edit');
+    Route::put('profiles/{profile}', [ProfileController::class, 'update'])->name('profiles.update');
+    Route::delete('profiles/{profile}', [ProfileController::class, 'destroy'])->name('profiles.destroy');
 });
 
 Route::get('/user/dashboard', function () {

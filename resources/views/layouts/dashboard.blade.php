@@ -28,37 +28,37 @@
       <h2 class="text-3xl font-extrabold tracking-wide mb-6 text-blue-800">Dashboard</h2>
       
       <!-- Tombol Dashboard -->
-      <a href="dashboard" class="block py-3 px-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 shadow-md text-center mb-6">🏠 Dashboard</a>
+      <a href="dashboard" class="block py-3 px-4 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 shadow-md text-center mb-6">🏠 Dashboard</a>
       
       <nav class="space-y-4">
         <!-- Menu User & Admin -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">User Management</h3>
         <a href="/admin/adminuser" class="block py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600">👤 Kelola Admin</a>
-        <a href="/admin/user" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">👥 Kelola Pengguna</a>
+        <a href="/admin/user" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">👥 Kelola Pengguna</a>
 
         <!-- Menu Absensi -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
-        <a href="attendance_records" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">📆 Data Absensi</a>
-        <a href="attendance_summaries" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">📊 Rekap Absensi</a>
+        <a href="attendance_records" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📆 Data Absensi</a>
+        <a href="/admin/summaries" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📊 Rekap Absensi</a>
 
         <!-- Menu Tugas & Pekerjaan -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Manajemen Tugas</h3>
-        <a href="tasks" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">✅ Daftar Tugas</a>
-        <a href="task_assignments" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">📋 Penugasan</a>
-        <a href="task_history" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">⏳ Riwayat Tugas</a>
+        <a href="tasks" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">✅ Daftar Tugas</a>
+        <a href="task_assignments" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📋 Penugasan</a>
+        <a href="task_history" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⏳ Riwayat Tugas</a>
 
         <!-- Menu Lainnya -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Sistem</h3>
-        <a href="cache" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">⚙️ Cache</a>
-        <a href="jobs" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">🔄 Pekerjaan Background</a>
-        <a href="logins" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">🔐 Log Masuk</a>
-        <a href="reminders" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">⏰ Pengingat</a>
-        <a href="sessions" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">📂 Sesi Aktif</a>
+        <a href="cache" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⚙️ Cache</a>
+        <a href="jobs" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔄 Pekerjaan Background</a>
+        <a href="logins" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔐 Log Masuk</a>
+        <a href="reminders" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⏰ Pengingat</a>
+        <a href="sessions" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📂 Sesi Aktif</a>
 
         <!-- Menu Profil -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Profil</h3>
-        <a href="profile" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">🏢 Informasi Profil</a>
-        <a href="foto" class="block py-2 px-4 text-blue-700 rounded-lg hover:bg-blue-300">📸 Galeri Foto</a>
+        <a href="/admin/profiles" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🏢 Informasi Profil</a>
+        <a href="foto" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📸 Galeri Foto</a>
       </nav>
     </aside>
 
