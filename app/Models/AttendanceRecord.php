@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AttendanceRecord extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'user_id',
         'name',
@@ -20,9 +19,8 @@ class AttendanceRecord extends Model
         'durasi_lembur',
         'status',
     ];
-
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

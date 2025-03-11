@@ -10,7 +10,6 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
-
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
 use App\Http\Controllers\Admin\AdminUserController;
@@ -34,7 +33,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/user/create', function () {
         return view('admin.usercreate');
     })->name('users.create');
-
     Route::resource('adminuser', AdminUserController::class, ['names' => 'adminusers']);
     Route::resource('summaries', AttendanceSummaryController::class);
 
@@ -45,8 +43,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('summaries/{attendanceSummary}/edit', [AttendanceSummaryController::class, 'edit'])->name('summaries.edit');
     Route::put('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'update'])->name('summaries.update');
     Route::delete('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'destroy'])->name('summaries.destroy');
-
     Route::resource('profiles', ProfileController::class);
+
     // Menampilkan daftar profil
     Route::get('profiles', [ProfileController::class, 'index'])->name('profiles.index');
     Route::get('profiles/create', [ProfileController::class, 'create'])->name('profilescreate.create');
@@ -59,5 +57,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/user/dashboard', function () {
     return view('user.dashboard');
 })->name('user.dashboard');
+
+use App\Http\Controllers\AttendanceRecordController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/attendance', [AttendanceRecordController::class, 'index'])->name('user.attendance');
+    Route::post('/user/absen-masuk', [AttendanceRecordController::class, 'absenMasuk'])->name('user.absen.masuk');
+    Route::post('/user/absen-pulang', [AttendanceRecordController::class, 'absenPulang'])->name('user.absen.pulang');
+});
+
+use App\Http\Controllers\AttendanceHistoryController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('user/attendance-history', [AttendanceHistoryController::class, 'index'])->name('user.attendance_history');
+});
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
