@@ -37,7 +37,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('summaries', AttendanceSummaryController::class);
 
     // Route untuk Attendance Summary
-    Route::get('summaries', [AttendanceSummaryController::class, 'index'])->name('summaries.index');
+    Route::get('/summaries', [AttendanceSummaryController::class, 'index'])->name('summaries.index');
+    Route::get('/summaries/generate', [AttendanceSummaryController::class, 'showGenerate'])->name('summaries.showGenerate');
+    Route::post('/summaries/generate', [AttendanceSummaryController::class, 'generate'])->name('summariesgenerate');
     Route::get('summaries/create', [AttendanceSummaryController::class, 'create'])->name('summariescreate.create');
     Route::post('summaries', [AttendanceSummaryController::class, 'store'])->name('summaries.store');
     Route::get('summaries/{attendanceSummary}/edit', [AttendanceSummaryController::class, 'edit'])->name('summaries.edit');
@@ -52,6 +54,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('profiles/{profile}/edit', [ProfileController::class, 'edit'])->name('profilesedit.edit');
     Route::put('profiles/{profile}', [ProfileController::class, 'update'])->name('profiles.update');
     Route::delete('profiles/{profile}', [ProfileController::class, 'destroy'])->name('profiles.destroy');
+    Route::get('/users/count-by-department/{department}', [AttendanceSummaryController::class, 'countByDepartment']);
 });
 
 Route::get('/user/dashboard', function () {

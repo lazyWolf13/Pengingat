@@ -10,6 +10,7 @@ class CreateAttendanceSummariesTable extends Migration
         Schema::create('attendance_summaries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('attendance_record_id')->constrained('attendance_records')->onDelete('cascade');
             $table->integer('bulan');
             $table->integer('tahun');
             $table->integer('total_hadir');

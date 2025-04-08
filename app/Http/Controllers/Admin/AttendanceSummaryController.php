@@ -4,66 +4,129 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceSummary;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceSummaryController extends Controller
 {
     public function index()
     {
-        $attendanceSummaries = AttendanceSummary::with('user')->get();
-        return view('admin.summaries', compact('attendanceSummaries'));
+        $totalKaryawan = User::count();
+        $currentMonth = date('n');
+        $currentYear = date('Y');
+        
+        $totalHadir = DB::table('attendance_records')
+            ->whereMonth('tanggal', $currentMonth)
+            ->whereYear('tanggal', $currentYear)
+            ->where('status', 'hadir')
+            ->count();
+        
+        $totalTerlambat = DB::table('attendance_records')
+            ->whereMonth('tanggal', $currentMonth)
+            ->whereYear('tanggal', $currentYear)
+            ->where('status', 'terlambat')
+            ->count();
+        
+        $totalCuti = DB::table('attendance_records')
+            ->whereMonth('tanggal', $currentMonth)
+            ->whereYear('tanggal', $currentYear)
+            ->where('status', 'cuti')
+            ->count();
+
+        $summaries = AttendanceSummary::with(['user', 'admin'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.summaries', compact(
+            'summaries',
+            'totalKaryawan',
+            'totalHadir',
+            'totalTerlambat',
+            'totalCuti'
+        ));
     }
 
-    public function create()
-    {
-        \Log::info('Create method called');
-        return view('admin.summariescreate');
-    }
-
-    public function store(Request $request)
+    public function generate(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'bulan' => 'required|integer',
-            'tahun' => 'required|integer',
-            'total_hadir' => 'required|integer',
-            'total_terlambat' => 'required|integer',
-            'total_lembur' => 'nullable|date_format:H:i',
-            'total_izin' => 'required|integer',
-            'total_cuti' => 'required|integer',
-            'admin_id' => 'nullable|exists:admin_users,id',
+            'bulan' => 'required|integer|between:1,12',
+            'tahun' => 'required|integer|min:2000'
         ]);
 
-        AttendanceSummary::create($request->all());
-        return redirect()->route('attendance.summaries.index')->with('success', 'Attendance summary created successfully.');
+        try {
+            DB::transaction(function () use ($request) {
+                $users = User::all();
+                foreach ($users as $user) {
+                    AttendanceSummary::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'bulan' => $request->bulan,
+                            'tahun' => $request->tahun,
+                        ],
+                        [
+                            'total_hadir' => $this->countAttendance($user->id, $request->bulan, $request->tahun, 'hadir'),
+                            'total_terlambat' => $this->countAttendance($user->id, $request->bulan, $request->tahun, 'terlambat'),
+                            'total_izin' => $this->countAttendance($user->id, $request->bulan, $request->tahun, 'izin'),
+                            'total_cuti' => $this->countAttendance($user->id, $request->bulan, $request->tahun, 'cuti'),
+                            'total_lembur' => $this->calculateOvertime($user->id, $request->bulan, $request->tahun),
+                            'admin_id' => auth()->id(),
+                            'managed_at' => now(),
+                        ]
+                    );
+                }
+            });
+
+            // Ambil data terbaru untuk ditampilkan
+            $summaries = AttendanceSummary::with(['user', 'admin'])
+                ->where('bulan', $request->bulan)
+                ->where('tahun', $request->tahun)
+                ->latest()
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ringkasan absensi berhasil digenerate',
+                'summaries' => $summaries
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function edit(AttendanceSummary $attendanceSummary)
+    private function countAttendance($userId, $bulan, $tahun, $status)
     {
-        return view('admin.summariesedit', compact('attendanceSummary'));
+        return DB::table('attendance_records')
+            ->where('user_id', $userId)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->where('status', $status)
+            ->count();
     }
 
-    public function update(Request $request, AttendanceSummary $attendanceSummary)
+    private function calculateOvertime($userId, $bulan, $tahun)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'bulan' => 'required|integer',
-            'tahun' => 'required|integer',
-            'total_hadir' => 'required|integer',
-            'total_terlambat' => 'required|integer',
-            'total_lembur' => 'nullable|date_format:H:i',
-            'total_izin' => 'required|integer',
-            'total_cuti' => 'required|integer',
-            'admin_id' => 'nullable|exists:admin_users,id',
-        ]);
-
-        $attendanceSummary->update($request->all());
-        return redirect()->route('attendance.summaries.index')->with('success', 'Attendance summary updated successfully.');
+        return DB::table('attendance_records')
+            ->where('user_id', $userId)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->where('status', 'lembur')
+            ->count();
     }
 
-    public function destroy(AttendanceSummary $attendanceSummary)
+    public function showGenerate()
     {
-        $attendanceSummary->delete();
-        return redirect()->route('attendance.summaries.index')->with('success', 'Attendance summary deleted successfully.');
+        $totalKaryawan = User::count();
+        return view('admin.summariesgenerate', compact('totalKaryawan'));
+    }
+
+    public function countByDepartment($department)
+    {
+        $count = User::where('department', $department)->count();
+        return response()->json(['count' => $count]);
     }
 }
