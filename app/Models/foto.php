@@ -11,5 +11,15 @@ class Foto extends Model
 
     protected $table = 'foto';
 
-    protected $fillable = ['file', 'judul'];
+    protected $fillable = [
+        'file',
+        'judul',
+        'catatan',
+    ];
+
+    // Accessor to get the full URL of the photo
+    public function getFileUrlAttribute()
+    {
+        return asset('storage/' . $this->file);
+    }
 }

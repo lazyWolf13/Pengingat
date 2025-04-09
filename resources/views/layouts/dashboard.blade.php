@@ -58,7 +58,7 @@
         <!-- Menu Profil -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Profil</h3>
         <a href="/admin/profiles" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🏢 Informasi Profil</a>
-        <a href="foto" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📸 Galeri Foto</a>
+        <a href="/admin/foto" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📸 Galeri Foto</a>
       </nav>
     </aside>
 
