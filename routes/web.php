@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceSummaryController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\FotoController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/adminuser', [AdminUserController::class, 'index'])->name('adminusers.index');
@@ -55,6 +56,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('profiles/{profile}', [ProfileController::class, 'update'])->name('profiles.update');
     Route::delete('profiles/{profile}', [ProfileController::class, 'destroy'])->name('profiles.destroy');
     Route::get('/users/count-by-department/{department}', [AttendanceSummaryController::class, 'countByDepartment']);
+    Route::resource('foto', FotoController::class);
+    
+    // Foto Routes
+    Route::get('/foto', [FotoController::class, 'index'])->name('foto.index');
+    Route::get('/foto/create', [FotoController::class, 'create'])->name('fotocreate.create');
+    Route::post('/foto', [FotoController::class, 'store'])->name('fotocreate.store');
+    Route::get('/foto/{foto}', [FotoController::class, 'show'])->name('foto.show');
+    Route::get('/foto/{foto}/edit', [FotoController::class, 'edit'])->name('fotoedit.edit');
+    Route::put('/foto/{foto}', [FotoController::class, 'update'])->name('foto.update');
+    Route::delete('/foto/{foto}', [FotoController::class, 'destroy'])->name('foto.destroy');
 });
 
 Route::get('/user/dashboard', function () {

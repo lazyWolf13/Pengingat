@@ -12,6 +12,7 @@ class CreateFotoTable extends Migration
             $table->id();
             $table->string('file'); // Path file gambar
             $table->string('judul')->nullable(); // Judul atau deskripsi gambar
+            $table->text('catatan')->nullable(); // Catatan tambahan
             $table->timestamps();
         });
     }
