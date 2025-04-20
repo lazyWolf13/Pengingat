@@ -38,7 +38,7 @@
 
         <!-- Menu Absensi -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
-        <a href="attendance_records" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📆 Data Absensi</a>
+        <a href= "/admin/attendance" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📆 Data Absensi</a>
         <a href="/admin/summaries" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📊 Rekap Absensi</a>
 
         <!-- Menu Tugas & Pekerjaan -->
@@ -53,7 +53,7 @@
         <a href="jobs" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔄 Pekerjaan Background</a>
         <a href="logins" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔐 Log Masuk</a>
         <a href="reminders" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⏰ Pengingat</a>
-        <a href="sessions" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📂 Sesi Aktif</a>
+        <a href="/admin/leavereq" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📂 Lave Request</a>
 
         <!-- Menu Profil -->
         <h3 class="text-gray-600 uppercase text-xs font-bold">Profil</h3>
