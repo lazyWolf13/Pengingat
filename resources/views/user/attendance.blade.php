@@ -31,7 +31,7 @@
                 @if(\Carbon\Carbon::parse($attendance->waktu_check_in)->format('H:i') > '08:30')
                     <span class="text-red-600 font-semibold">⏰ Terlambat</span>
                 @else
-                    <span class="text-green-600 font-semibold">✔️ Tepat Waktu</span>
+                    <span class="text-green-600 font-semibold">✔ Tepat Waktu</span>
                 @endif
             </p>
         @endif
@@ -69,22 +69,31 @@
                 <option value="Hadir">Hadir</option>
                 <option value="Sakit">Sakit</option>
                 <option value="Izin">Izin</option>
+                <option value="Cuti">Cuti</option>
             </select>
+
             <div id="uploadSection" class="hidden">
                 <label class="block mb-2">Upload Surat (PDF/JPG/PNG):</label>
                 <input type="file" name="file_surat" class="w-full border rounded p-2 mb-4">
-                
+
                 <label class="block mb-2">Keterangan:</label>
                 <textarea name="keterangan" class="w-full border rounded p-2 mb-4"></textarea>
             </div>
-            <!-- Tambahkan input hidden untuk waktu lokal -->
+
             <input type="hidden" name="local_time" id="local_time">
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
-                ✅ OK
-            </button>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancelAbsenMasuk" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500">
+                    ❌ Cancel
+                </button>
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                    ✅ OK
+                </button>
+            </div>
         </form>
     </div>  
 </div>
+
 <!-- Modal Form Absen Pulang -->
 <div id="absenPulangModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -99,28 +108,34 @@
         </form>
     </div>
 </div>
+
 <script>
 document.getElementById("openAbsenModal").addEventListener("click", function() {
     document.getElementById("absenModal").classList.remove("hidden");
 });
-    document.getElementById("statusAbsen").addEventListener("change", function() {
-        let uploadSection = document.getElementById("uploadSection");
-        if (this.value === "Sakit" || this.value === "Izin") {
-            uploadSection.classList.remove("hidden");
-        } else {
-            uploadSection.classList.add("hidden");
-        }
-    });
 
-    document.getElementById("absenMasukForm").addEventListener("submit", function() {
-        let now = new Date();
-        let formattedTime = now.getFullYear() + '-' + 
-            ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
-            ('0' + now.getDate()).slice(-2) + ' ' + 
-            ('0' + now.getHours()).slice(-2) + ':' + 
-            ('0' + now.getMinutes()).slice(-2) + ':' + 
-            ('0' + now.getSeconds()).slice(-2);
-        document.getElementById("local_time").value = formattedTime;
-    });
+document.getElementById("cancelAbsenMasuk").addEventListener("click", function() {
+    document.getElementById("absenModal").classList.add("hidden");
+});
+
+document.getElementById("statusAbsen").addEventListener("change", function() {
+    let uploadSection = document.getElementById("uploadSection");
+    if (["Sakit", "Izin", "Cuti"].includes(this.value)) {
+        uploadSection.classList.remove("hidden");
+    } else {
+        uploadSection.classList.add("hidden");
+    }
+});
+
+document.getElementById("absenMasukForm").addEventListener("submit", function() {
+    let now = new Date();
+    let formattedTime = now.getFullYear() + '-' + 
+        ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
+        ('0' + now.getDate()).slice(-2) + ' ' + 
+        ('0' + now.getHours()).slice(-2) + ':' + 
+        ('0' + now.getMinutes()).slice(-2) + ':' + 
+        ('0' + now.getSeconds()).slice(-2);
+    document.getElementById("local_time").value = formattedTime;
+});
 </script>
 @endsection

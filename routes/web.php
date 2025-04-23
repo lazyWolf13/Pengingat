@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\FormPengingatController;
+use App\Http\Controllers\Admin\RekapPengingatController;
 
 Route::get('/', function () {
+    
     return view('welcome');
 });
 
@@ -17,6 +20,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceSummaryController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\FotoController;
+use App\Http\Controllers\Admin\LeaveRequestController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/adminuser', [AdminUserController::class, 'index'])->name('adminusers.index');
@@ -66,6 +70,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/foto/{foto}/edit', [FotoController::class, 'edit'])->name('fotoedit.edit');
     Route::put('/foto/{foto}', [FotoController::class, 'update'])->name('foto.update');
     Route::delete('/foto/{foto}', [FotoController::class, 'destroy'])->name('foto.destroy');
+
+    
+    // Leave Request Routes
+    Route::get('/leavereq', [LeaveRequestController::class, 'index'])->name('leavereq.index');
+    Route::get('/leavereq/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('leavereq.show');
+    Route::post('/leavereq/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leavereq.approve');
+    Route::delete('/leavereq/{leaveRequest}', [LeaveRequestController::class, 'destroy'])->name('leavereq.destroy');
 });
 
 Route::get('/user/dashboard', function () {
@@ -87,3 +98,28 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+//route pengingat_tugas
+// Route untuk form pengingat (create dan store)
+Route::get('/form_pengingat', [FormPengingatController::class, 'create'])->name('user.form_pengingat.create');
+Route::post('/form_pengingat', [FormPengingatController::class, 'store'])->name('user.form_pengingat.store');
+
+// Route untuk pengingat dashboard (setelah login)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/pengingat', [FormPengingatController::class, 'dashboard'])->name('user.pengingat');
+    
+    // Menambahkan route untuk menampilkan pengingat
+    Route::get('/user/pengingat/index', [FormPengingatController::class, 'index'])->name('user.pengingat.index');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // ... existing routes ...
+
+    // Form Pengingat Routes
+    Route::get('/form-pengingat', [FormPengingatController::class, 'create'])->name('user.form_pengingat.create');
+    Route::post('/form-pengingat', [FormPengingatController::class, 'store'])->name('user.form_pengingat.store');
+});
+
+//rekap pengingat tugas
+Route::get('admin/rekap-pengingat', [RekapPengingatController::class, 'index'])->name('admin.rekap_pengingat');
+Route::get('admin/rekap-pengingat/{id}', [RekapPengingatController::class, 'show'])->name('admin.rekap_pengingat.show');
