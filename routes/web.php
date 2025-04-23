@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\FormPengingatController;
+use App\Http\Controllers\Admin\RekapPengingatController;
 
 Route::get('/', function () {
     
@@ -134,5 +135,30 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 //route pengingat_tugas
+// Route untuk form pengingat (create dan store)
+Route::get('/form_pengingat', [FormPengingatController::class, 'create'])->name('user.form_pengingat.create');
+Route::post('/form_pengingat', [FormPengingatController::class, 'store'])->name('user.form_pengingat.store');
+
+// Route untuk pengingat dashboard (setelah login)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/pengingat', [FormPengingatController::class, 'dashboard'])->name('user.pengingat');
+    
+    // Menambahkan route untuk menampilkan pengingat
+    Route::get('/user/pengingat/index', [FormPengingatController::class, 'index'])->name('user.pengingat.index');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // ... existing routes ...
+
+    // Form Pengingat Routes
+    Route::get('/form-pengingat', [FormPengingatController::class, 'create'])->name('user.form_pengingat.create');
+    Route::post('/form-pengingat', [FormPengingatController::class, 'store'])->name('user.form_pengingat.store');
+});
+
+//rekap pengingat tugas
+Route::get('admin/rekap-pengingat', [RekapPengingatController::class, 'index'])->name('admin.rekap_pengingat');
+Route::get('admin/rekap-pengingat/{id}', [RekapPengingatController::class, 'show'])->name('admin.rekap_pengingat.show');
+
 Route::get('/form-pengingat', [FormPengingatController::class, 'create'])->name('form.pengingat.create');
 Route::post('/form-pengingat', [FormPengingatController::class, 'store'])->name('form.pengingat.store');
+

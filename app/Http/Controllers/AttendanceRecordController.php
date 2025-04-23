@@ -22,6 +22,13 @@ class AttendanceRecordController extends Controller
     public function absenMasuk(Request $request)
     {
         $request->validate([
+
+            'status' => 'required|in:Hadir,Sakit,Izin,Cuti', // tambahkan Cuti
+            'file_surat' => 'required_if:status,Sakit,Izin,Cuti|file|mimes:jpg,jpeg,png,pdf',
+            'keterangan' => 'required_if:status,Sakit,Izin,Cuti',
+            'local_time' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+        
             'status' => 'required|in:Hadir,Izin,Cuti', // Hapus Sakit dari validasi
             'local_time' => 'required|date_format:Y-m-d H:i:s',
             'latitude' => 'required|numeric',
@@ -106,4 +113,5 @@ class AttendanceRecordController extends Controller
         $records = $query->get();
         return view('attendance_history', compact('records'));
     }
+}
 }

@@ -93,6 +93,15 @@
                 <option value="Cuti">Cuti</option>
             </select>
 
+            <div id="uploadSection" class="hidden">
+                <label class="block mb-2">Upload Surat (PDF/JPG/PNG):</label>
+                <input type="file" name="file_surat" class="w-full border rounded p-2 mb-4">
+
+                <label class="block mb-2">Keterangan:</label>
+                <textarea name="keterangan" class="w-full border rounded p-2 mb-4"></textarea>
+            </div>
+
+            <input type="hidden" name="local_time" id="local_time">
             <input type="hidden" name="local_time" id="local_time">
             <input type="hidden" name="latitude" id="latitude">
             <input type="hidden" name="longitude" id="longitude">
@@ -110,6 +119,18 @@
     </div>  
 </div>
 
+<!-- Modal Form Absen Pulang -->
+<div id="absenPulangModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">🏠 Absen Pulang</h2>
+        <form action="{{ route('user.absen.pulang') }}" method="POST">
+            @csrf
+            <p class="mb-4">Apakah Anda yakin ingin absen pulang?</p>
+            <button type="button" id="closeAbsenPulangModal" class="ml-2 text-gray-600 hover:text-gray-800">Batal</button>
+            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                🚪 Ya, Absen Pulang
+            </button>
+        </form>
 <!-- Modal Warning Jika di luar jangkauan -->
 <div id="warningModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
@@ -189,6 +210,30 @@ document.getElementById("cekLokasiAbsen").addEventListener("click", function() {
     } else {
         alert("Browser tidak mendukung geolokasi.");
     }
+});
+
+document.getElementById("cancelAbsenMasuk").addEventListener("click", function() {
+    document.getElementById("absenModal").classList.add("hidden");
+});
+
+document.getElementById("statusAbsen").addEventListener("change", function() {
+    let uploadSection = document.getElementById("uploadSection");
+    if (["Sakit", "Izin", "Cuti"].includes(this.value)) {
+        uploadSection.classList.remove("hidden");
+    } else {
+        uploadSection.classList.add("hidden");
+    }
+});
+
+document.getElementById("absenMasukForm").addEventListener("submit", function() {
+    let now = new Date();
+    let formattedTime = now.getFullYear() + '-' + 
+        ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
+        ('0' + now.getDate()).slice(-2) + ' ' + 
+        ('0' + now.getHours()).slice(-2) + ':' + 
+        ('0' + now.getMinutes()).slice(-2) + ':' + 
+        ('0' + now.getSeconds()).slice(-2);
+    document.getElementById("local_time").value = formattedTime;
 });
 </script>
 @endsection
