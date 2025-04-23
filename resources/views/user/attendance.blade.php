@@ -13,11 +13,26 @@
             @endif
         </p>
         <p><strong>📅 Tanggal:</strong> {{ now()->format('l, d F Y') }}</p>
-        @if($attendance && $attendance->waktu_check_in)
-            <p><strong>⏳ Waktu:</strong> 
+
+        {{-- Waktu --}}
+        <p><strong>⏳ Waktu Check-in:</strong> 
+            @if($attendance && $attendance->waktu_check_in)
                 <span class="font-semibold">{{ \Carbon\Carbon::parse($attendance->waktu_check_in)->format('H:i') }}</span>
-            </p>
-        @endif
+            @else
+                <span class="text-gray-500">-</span>
+            @endif
+        </p>
+
+        {{-- Lokasi Absen --}}
+        <p><strong>📍 Lokasi Absen:</strong> 
+            @if($attendance && $attendance->lokasi_absen)
+                <span class="font-semibold">{{ $attendance->lokasi_absen }}</span>
+            @else
+                <span class="text-gray-500">-</span>
+            @endif
+        </p>
+
+        {{-- Status Absen --}}
         <p><strong>📌 Status Absen:</strong> 
             @if($attendance)
                 <span class="text-green-600 font-semibold">✅ Absen Masuk</span>
@@ -25,31 +40,38 @@
                 <span class="text-red-600 font-semibold">❌ Belum Absen</span>
             @endif
         </p>
-        
-        @if($attendance && $attendance->waktu_check_in)
-            <p><strong>📩 Keterangan:</strong> 
+
+        {{-- Keterangan Ketepatan Waktu --}}
+        <p><strong>📩 Keterangan:</strong> 
+            @if($attendance && $attendance->waktu_check_in)
                 @if(\Carbon\Carbon::parse($attendance->waktu_check_in)->format('H:i') > '08:30')
                     <span class="text-red-600 font-semibold">⏰ Terlambat</span>
                 @else
                     <span class="text-green-600 font-semibold">✔ Tepat Waktu</span>
                 @endif
-            </p>
-        @endif
+            @else
+                <span class="text-gray-500">-</span>
+            @endif
+        </p>
     </div>
+
     <div class="mt-3 flex justify-start">
         @if(!$attendance)
-            <button id="openAbsenModal" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 w-full max-w-[200px]">
-                🚀 Absen Masuk
-            </button>
+        <button 
+            id="cekLokasiAbsen"
+            class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 w-full max-w-[200px]">
+            🚀 Absen Masuk
+        </button>
         @endif
+
         @if($attendance)
             <form action="{{ route('user.absen.pulang') }}" method="POST" class="mt-3 flex justify-start">
                 @csrf
                 <button type="submit" 
                     id="btnAbsenPulang"
                     class="px-6 py-2 rounded-lg 
-                    @if(now()->format('H') < 16 || $attendance->waktu_check_out) bg-gray-400 cursor-not-allowed @else bg-blue-500 hover:bg-blue-600 text-white @endif"
-                    @if(now()->format('H') < 16 || $attendance->waktu_check_out) disabled @endif
+                    @if($attendance->status == 'hadir' && !$attendance->waktu_check_out) bg-blue-500 hover:bg-blue-600 text-white @else bg-gray-400 cursor-not-allowed @endif"
+                    @if($attendance->status != 'hadir' || $attendance->waktu_check_out) disabled @endif
                 >
                     🏠 Absen Pulang
                 </button>
@@ -67,20 +89,14 @@
             <label class="block mb-2">Status Absen:</label>
             <select name="status" id="statusAbsen" class="w-full border rounded p-2 mb-4">
                 <option value="Hadir">Hadir</option>
-                <option value="Sakit">Sakit</option>
                 <option value="Izin">Izin</option>
                 <option value="Cuti">Cuti</option>
             </select>
 
-            <div id="uploadSection" class="hidden">
-                <label class="block mb-2">Upload Surat (PDF/JPG/PNG):</label>
-                <input type="file" name="file_surat" class="w-full border rounded p-2 mb-4">
-
-                <label class="block mb-2">Keterangan:</label>
-                <textarea name="keterangan" class="w-full border rounded p-2 mb-4"></textarea>
-            </div>
-
             <input type="hidden" name="local_time" id="local_time">
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+            <input type="hidden" name="lokasi_absen" id="lokasi_absen">
 
             <div class="flex justify-end gap-2">
                 <button type="button" id="cancelAbsenMasuk" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500">
@@ -94,48 +110,74 @@
     </div>  
 </div>
 
-<!-- Modal Form Absen Pulang -->
-<div id="absenPulangModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 class="text-xl font-bold mb-4">🏠 Absen Pulang</h2>
-        <form action="{{ route('user.absen.pulang') }}" method="POST">
-            @csrf
-            <p class="mb-4">Apakah Anda yakin ingin absen pulang?</p>
-            <button type="button" id="closeAbsenPulangModal" class="ml-2 text-gray-600 hover:text-gray-800">Batal</button>
-            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-                🚪 Ya, Absen Pulang
-            </button>
-        </form>
-    </div>
-</div>
-
 <script>
-document.getElementById("openAbsenModal").addEventListener("click", function() {
-    document.getElementById("absenModal").classList.remove("hidden");
-});
-
 document.getElementById("cancelAbsenMasuk").addEventListener("click", function() {
     document.getElementById("absenModal").classList.add("hidden");
 });
 
-document.getElementById("statusAbsen").addEventListener("change", function() {
-    let uploadSection = document.getElementById("uploadSection");
-    if (["Sakit", "Izin", "Cuti"].includes(this.value)) {
-        uploadSection.classList.remove("hidden");
+document.getElementById("absenMasukForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // prevent submit sampai dapat lokasi
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let now = new Date();
+            let formattedTime = now.getFullYear() + '-' + 
+                ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
+                ('0' + now.getDate()).slice(-2) + ' ' + 
+                ('0' + now.getHours()).slice(-2) + ':' + 
+                ('0' + now.getMinutes()).slice(-2) + ':' + 
+                ('0' + now.getSeconds()).slice(-2);
+
+            document.getElementById("local_time").value = formattedTime;
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+            document.getElementById("lokasi_absen").value = position.coords.latitude + ',' + position.coords.longitude;
+
+            // submit form setelah semua data terisi
+            document.getElementById("absenMasukForm").submit();
+        }, function(error) {
+            alert("Gagal mengambil lokasi. Izinkan akses lokasi di browser Anda.");
+        });
     } else {
-        uploadSection.classList.add("hidden");
+        alert("Browser tidak mendukung geolokasi.");
     }
 });
 
-document.getElementById("absenMasukForm").addEventListener("submit", function() {
-    let now = new Date();
-    let formattedTime = now.getFullYear() + '-' + 
-        ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
-        ('0' + now.getDate()).slice(-2) + ' ' + 
-        ('0' + now.getHours()).slice(-2) + ':' + 
-        ('0' + now.getMinutes()).slice(-2) + ':' + 
-        ('0' + now.getSeconds()).slice(-2);
-    document.getElementById("local_time").value = formattedTime;
+const lokasiAbsen = { lat: -6.6027276535294, lng: 106.79819226264955 }; // Titik lokasi tetap (misalnya lokasi sekolah)
+const batasRadius = 300; // meter
+
+function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Radius bumi dalam meter
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in meters
+}
+
+document.getElementById("cekLokasiAbsen").addEventListener("click", function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            const distance = getDistanceFromLatLonInMeters(userLat, userLng, lokasiAbsen.lat, lokasiAbsen.lng);
+
+            if (distance <= batasRadius) {
+                // Di dalam radius: buka form absen
+                document.getElementById("absenModal").classList.remove("hidden");
+            } else {
+                // Di luar radius: tampilkan modal warning
+                alert("Anda berada di luar jangkauan untuk melakukan absen.");
+            }
+        }, function(error) {
+            alert("Gagal mengambil lokasi. Izinkan akses lokasi di browser Anda.");
+        });
+    } else {
+        alert("Browser tidak mendukung geolokasi.");
+    }
 });
 </script>
 @endsection

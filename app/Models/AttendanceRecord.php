@@ -11,13 +11,14 @@ class AttendanceRecord extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
         'tanggal',
-        'jam_masuk',
-        'jam_pulang',
+        'waktu_check_in',
+        'waktu_check_out',
+        'lokasi_absen',
         'status',
         'ketepatan_waktu',
         'durasi_lembur',
-        'keterangan'
     ];
 
     protected $casts = [
