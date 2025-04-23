@@ -110,6 +110,17 @@
     </div>  
 </div>
 
+<!-- Modal Warning Jika di luar jangkauan -->
+<div id="warningModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+        <h2 class="text-xl font-bold mb-4 text-red-600">⚠ Tidak Bisa Absen</h2>
+        <p class="mb-4">Kamu berada di luar jangkauan lokasi absen. Silakan berada di area yang diperbolehkan untuk melakukan absen.</p>
+        <button id="closeWarningModal" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
+            OK
+        </button>
+    </div>
+</div>
+
 <script>
 document.getElementById("cancelAbsenMasuk").addEventListener("click", function() {
     document.getElementById("absenModal").classList.add("hidden");
