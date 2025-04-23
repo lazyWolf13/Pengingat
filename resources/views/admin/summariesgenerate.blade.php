@@ -1,342 +1,91 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Generate Ringkasan Absensi')
+
 @section('content')
-<div class="modern-background">
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-</div>
-
-<div class="container-fluid px-4 position-relative">
-    <!-- Stats Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-info">
-                    <div class="stat-card-icon bg-primary">
-                        <i class="fas fa-calendar"></i>
-                    </div>
-                    <div>
-                        <h6 class="stat-card-title">Periode</h6>
-                        <h3 class="stat-card-number" id="selectedPeriod">-</h3>
-                    </div>
-                </div>
-                <div class="stat-card-chart">
-                    <div class="chart-line"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-info">
-                    <div class="stat-card-icon bg-success">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <h6 class="stat-card-title">Total Karyawan</h6>
-                        <h3 class="stat-card-number" id="totalEmployees">{{ $totalKaryawan }}</h3>
-                    </div>
-                </div>
-                <div class="stat-card-chart">
-                    <div class="chart-line success"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-info">
-                    <div class="stat-card-icon bg-info">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div>
-                        <h6 class="stat-card-title">Hari Kerja</h6>
-                        <h3 class="stat-card-number">22</h3>
-                    </div>
-                </div>
-                <div class="stat-card-chart">
-                    <div class="chart-line info"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-info">
-                    <div class="stat-card-icon bg-warning">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <div>
-                        <h6 class="stat-card-title">Status</h6>
-                        <h3 class="stat-card-number" id="generateStatus">Siap</h3>
-                    </div>
-                </div>
-                <div class="stat-card-chart">
-                    <div class="chart-line warning"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Card -->
-    <div class="content-card">
-        <div class="content-header">
+<div class="container-fluid px-4 py-6">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between mb-6">
             <div>
-                <h4 class="content-title">Generate Ringkasan Absensi</h4>
-                <p class="content-subtitle">Generate ringkasan absensi karyawan berdasarkan periode</p>
+                <h1 class="text-2xl font-bold text-gray-800">Generate Ringkasan Absensi</h1>
+                <p class="text-sm text-gray-500 mt-1">Buat ringkasan absensi untuk periode tertentu</p>
             </div>
-            <a href="{{ route('admin.summaries.index') }}" class="btn-secondary">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Kembali
+            <a href="{{ route('admin.summaries.index') }}" class="text-gray-600 hover:text-gray-800 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
             </a>
         </div>
 
-        <div class="card-body p-4">
-            <form action="{{ route('admin.summariesgenerate') }}" method="POST" id="generateForm">
+        <!-- Form Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <form id="generateForm" action="{{ route('admin.summaries.generate') }}" method="POST" class="space-y-6">
                 @csrf
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-section">
-                            <h5 class="section-title">
-                                <i class="fas fa-calendar-alt text-primary mr-2"></i>
-                                Pilih Periode
-                            </h5>
-                            <div class="period-selector">
-                                <select name="bulan" class="form-control" required>
-                                    @foreach(range(1, 12) as $month)
-                                        <option value="{{ $month }}" {{ date('n') == $month ? 'selected' : '' }}>
-                                            {{ date('F', mktime(0, 0, 0, $month, 1)) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <select name="tahun" class="form-control" required>
-                                    @foreach(range(date('Y')-5, date('Y')) as $year)
-                                        <option value="{{ $year }}" {{ date('Y') == $year ? 'selected' : '' }}>
-                                            {{ $year }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-section mt-4">
-                            <h5 class="section-title">
-                                <i class="fas fa-building text-success mr-2"></i>
-                                Filter Departemen
-                            </h5>
-                            <select name="department" class="form-control">
-                                <option value="">Semua Departemen</option>
-                                <option value="IT">IT</option>
-                                <option value="HR">HR</option>
-                                <option value="Finance">Finance</option>
-                            </select>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Month Selection -->
+                    <div>
+                        <label for="bulan" class="block text-sm font-medium text-gray-700 mb-2">Bulan</label>
+                        <select name="bulan" id="bulan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200" required>
+                            @foreach(range(1, 12) as $month)
+                                <option value="{{ $month }}" {{ date('n') == $month ? 'selected' : '' }}>
+                                    {{ date('F', mktime(0, 0, 0, $month, 1)) }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="preview-card">
-                            <h5 class="preview-title">
-                                <i class="fas fa-info-circle text-info mr-2"></i>
-                                Informasi Generate
-                            </h5>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <i class="fas fa-users text-primary"></i>
-                                    <div class="info-content">
-                                        <span class="info-label">Total Karyawan</span>
-                                        <span class="info-value" id="previewEmployees">{{ $totalKaryawan }}</span>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="fas fa-calendar-check text-success"></i>
-                                    <div class="info-content">
-                                        <span class="info-label">Hari Kerja</span>
-                                        <span class="info-value">22 hari</span>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="fas fa-clock text-warning"></i>
-                                    <div class="info-content">
-                                        <span class="info-label">Status Generate</span>
-                                        <span class="info-value" id="previewStatus">Siap Generate</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Year Selection -->
+                    <div>
+                        <label for="tahun" class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
+                        <select name="tahun" id="tahun" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200" required>
+                            @foreach(range(date('Y')-5, date('Y')) as $year)
+                                <option value="{{ $year }}" {{ date('Y') == $year ? 'selected' : '' }}>
+                                    {{ $year }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="history.back()">
-                        <i class="fas fa-times mr-2"></i>Batal
-                    </button>
-                    <button type="submit" class="btn-generate" id="generateBtn">
-                        <i class="fas fa-sync-alt mr-2"></i>Generate Ringkasan
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end space-x-4 pt-6">
+                    <a href="{{ route('admin.summaries.index') }}" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">
+                        Kembali
+                    </a>
+                    <button type="submit" id="generateButton" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition duration-200 flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Generate Ringkasan</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<style>
-/* Existing styles from summaries.blade.php */
-.modern-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    z-index: -1;
-    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-}
-
-/* Stats Cards */
-.stat-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(33, 150, 243, 0.2);
-    border-radius: 16px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
-
-/* Content Card */
-.content-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(33, 150, 243, 0.2);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-/* Form Sections */
-.form-section {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(33, 150, 243, 0.1);
-}
-
-.section-title {
-    font-size: 1.1rem;
-    color: #1565C0;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-}
-
-/* Preview Card */
-.preview-card {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(33, 150, 243, 0.1);
-    height: 100%;
-}
-
-.info-grid {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.info-item {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* Buttons */
-.btn-generate {
-    background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.btn-cancel {
-    background: rgba(0, 0, 0, 0.05);
-    color: #666;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 500;
-    margin-right: 1rem;
-    transition: all 0.3s ease;
-}
-
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-}
-</style>
+@endsection
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('generateForm');
-    const generateBtn = document.getElementById('generateBtn');
-    const generateStatus = document.getElementById('generateStatus');
-    const previewStatus = document.getElementById('previewStatus');
-    const totalEmployees = document.getElementById('totalEmployees');
-    const previewEmployees = document.getElementById('previewEmployees');
-    const selectedPeriod = document.getElementById('selectedPeriod');
-
-    // Update period display
-    function updatePeriod() {
-        const month = document.querySelector('select[name="bulan"] option:checked').text;
-        const year = document.querySelector('select[name="tahun"]').value;
-        selectedPeriod.textContent = `${month} ${year}`;
-    }
-
-    // Initial period update
-    updatePeriod();
-
-    // Listen for period changes
-    document.querySelector('select[name="bulan"]').addEventListener('change', updatePeriod);
-    document.querySelector('select[name="tahun"]').addEventListener('change', updatePeriod);
-
-    // Hapus event listener untuk department change yang menggunakan random number
-    // dan ganti dengan nilai tetap dari database
-    const totalKaryawan = {{ $totalKaryawan }};
-    document.querySelector('select[name="department"]').addEventListener('change', function(e) {
-        if (e.target.value === '') {
-            // Jika "Semua Departemen" dipilih, tampilkan total keseluruhan
-            totalEmployees.textContent = totalKaryawan;
-            previewEmployees.textContent = totalKaryawan;
-        } else {
-            // Di sini Anda bisa menambahkan AJAX call untuk mendapatkan 
-            // jumlah karyawan per departemen jika diperlukan
-            fetch(`/admin/users/count-by-department/${e.target.value}`)
-                .then(response => response.json())
-                .then(data => {
-                    totalEmployees.textContent = data.count;
-                    previewEmployees.textContent = data.count;
-                });
-        }
-    });
+    const generateButton = document.getElementById('generateButton');
+    const buttonText = generateButton.querySelector('span');
+    const buttonIcon = generateButton.querySelector('svg');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        generateBtn.disabled = true;
-        generateStatus.textContent = 'Proses';
-        previewStatus.textContent = 'Sedang Memproses...';
-        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+        
+        // Disable button and show loading state
+        generateButton.disabled = true;
+        buttonText.textContent = 'Generating...';
+        buttonIcon.classList.add('animate-spin');
 
-        fetch(this.action, {
+        // Submit form via AJAX
+        fetch(form.action, {
             method: 'POST',
-            body: new FormData(this),
+            body: new FormData(form),
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json'
@@ -345,26 +94,37 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                generateStatus.textContent = 'Selesai';
-                previewStatus.textContent = 'Berhasil Generate!';
-                window.location.href = '{{ route("admin.summaries.index") }}';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = '{{ route("admin.summaries.index") }}';
+                });
             } else {
-                generateStatus.textContent = 'Gagal';
-                previewStatus.textContent = 'Gagal: ' + data.message;
-                alert('Terjadi kesalahan: ' + data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: data.message
+                });
             }
         })
         .catch(error => {
-            generateStatus.textContent = 'Error';
-            previewStatus.textContent = 'Gagal Generate';
-            alert('Terjadi kesalahan sistem');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Terjadi kesalahan sistem'
+            });
         })
         .finally(() => {
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Generate Ringkasan';
+            // Reset button state
+            generateButton.disabled = false;
+            buttonText.textContent = 'Generate Ringkasan';
+            buttonIcon.classList.remove('animate-spin');
         });
     });
 });
 </script>
-@endpush
-@endsection 
+@endpush 

@@ -18,6 +18,7 @@ Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceSummaryController;
+use App\Http\Controllers\Admin\AttendanceRecordsController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\FotoController;
 use App\Http\Controllers\Admin\LeaveRequestController;
@@ -50,6 +51,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('summaries/{attendanceSummary}/edit', [AttendanceSummaryController::class, 'edit'])->name('summaries.edit');
     Route::put('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'update'])->name('summaries.update');
     Route::delete('summaries/{attendanceSummary}', [AttendanceSummaryController::class, 'destroy'])->name('summaries.destroy');
+    Route::get('summaries//generate', [AttendanceSummaryController::class, 'generateForm'])->name('summaries.generate');
+    Route::post('summaries//generate', [AttendanceSummaryController::class, 'generate'])->name('generate');
+
+    Route::resource('attendance', AttendanceRecordsController::class);
+   
+    // Attendance Routes
+    Route::controller(App\Http\Controllers\Admin\AttendanceRecordsController::class)->group(function () {
+        // Main Attendance Routes
+        Route::get('/attendance', 'index')->name('attendance.index');
+        Route::get('/attendance/create', 'create')->name('attendancecreate.create');
+        Route::post('/attendance', 'store')->name('attendance.store');
+        Route::get('/attendance/{record}', 'show')->name('attendance.show');
+        Route::get('/attendance/{record}/edit', 'edit')->name('attendanceedit.edit');
+        Route::put('/attendance/{record}', 'update')->name('attendance.update');
+        Route::delete('/attendance/{record}', 'destroy')->name('attendance.destroy');
+        
+        // Export Routes
+        Route::get('/attendance/export/excel', 'exportExcel')->name('attendance.export.excel');
+        Route::get('/attendance/export/pdf', 'exportPdf')->name('attendance.export.pdf');
+    });
+
+    // Attendance Summaries Routes
+    Route::controller(App\Http\Controllers\Admin\AttendanceSummaryController::class)->group(function () {
+        Route::get('/summaries', 'index')->name('summaries.index');
+        Route::get('/summaries/generate', 'showGenerateForm')->name('summaries.generate.form');
+        Route::post('/summaries/generate', 'generate')->name('summaries.generate');
+        Route::get('/summaries/{summary}', 'show')->name('summaries.show');
+        Route::delete('/summaries/{summary}', 'destroy')->name('summaries.destroy');
+        
+        // Export Routes
+        Route::get('/summaries/export/excel', 'exportExcel')->name('summaries.export.excel');
+        Route::get('/summaries/export/pdf', 'exportPdf')->name('summaries.export.pdf');
+    });
+
     Route::resource('profiles', ProfileController::class);
 
     // Menampilkan daftar profil
@@ -123,3 +158,7 @@ Route::middleware(['auth'])->group(function () {
 //rekap pengingat tugas
 Route::get('admin/rekap-pengingat', [RekapPengingatController::class, 'index'])->name('admin.rekap_pengingat');
 Route::get('admin/rekap-pengingat/{id}', [RekapPengingatController::class, 'show'])->name('admin.rekap_pengingat.show');
+
+Route::get('/form-pengingat', [FormPengingatController::class, 'create'])->name('form.pengingat.create');
+Route::post('/form-pengingat', [FormPengingatController::class, 'store'])->name('form.pengingat.store');
+

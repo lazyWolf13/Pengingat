@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class FormPengingat extends Model
 {
     use HasFactory;
-
     protected $table = 'form_pengingat';
 
     protected $fillable = [
@@ -25,6 +25,10 @@ class FormPengingat extends Model
         'user_ids' => 'array',
         'disposisi' => 'array',
         'tanggal' => 'date'
+        'kategori',
+        'tanggal',
+        'text',
+        'file',
     ];
 
     public function user()

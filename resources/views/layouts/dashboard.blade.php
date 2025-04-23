@@ -37,6 +37,12 @@
                 class="block py-3 px-4 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 shadow-md text-center mb-6">🏠
                 Dashboard</a>
 
+        <!-- Menu Absensi -->
+        <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
+        <a href= "/admin/attendance" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📆 Data Absensi</a>
+        <a href="/admin/summaries" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📊 Rekap Absensi</a>
+
+
             <nav class="space-y-4">
                 <!-- Menu User & Admin -->
                 <h3 class="text-gray-600 uppercase text-xs font-bold">User Management</h3>
@@ -45,12 +51,20 @@
                 <a href="/admin/user" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">👥
                     Kelola Pengguna</a>
 
+
                 <!-- Menu Absensi -->
                 <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
                 <a href="attendance_records"
                     class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📆 Data Absensi</a>
                 <a href="/admin/summaries"
                     class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📊 Rekap Absensi</a>
+        <!-- Menu Lainnya -->
+        <h3 class="text-gray-600 uppercase text-xs font-bold">Sistem</h3>
+        <a href="cache" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⚙️ Cache</a>
+        <a href="jobs" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔄 Pekerjaan Background</a>
+        <a href="logins" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">🔐 Log Masuk</a>
+        <a href="reminders" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">⏰ Pengingat</a>
+        <a href="/admin/leavereq" class="block py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500">📂 Lave Request</a>
 
                 <!-- Menu Tugas & Pekerjaan -->
                 <h3 class="text-gray-600 uppercase text-xs font-bold">Manajemen Tugas</h3>

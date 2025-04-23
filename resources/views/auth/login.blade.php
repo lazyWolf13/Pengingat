@@ -45,6 +45,17 @@
                         class="w-full px-4 py-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-sm transition duration-200 ease-in-out">
                 </div>
 
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}
+                            class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-700">
+                            Remember Me
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Submit Button -->
                 <button type="submit" 
                     class="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition-all duration-300 shadow-lg">
