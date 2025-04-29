@@ -14,12 +14,36 @@ class Foto extends Model
     protected $fillable = [
         'file',
         'judul',
-        'catatan',
+        'catatan'
     ];
 
-    // Accessor to get the full URL of the photo
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
+
+    // Accessor untuk mendapatkan URL lengkap dari file gambar
     public function getFileUrlAttribute()
     {
         return asset('storage/' . $this->file);
+    }
+
+    // Accessor untuk mendapatkan path file gambar
+    public function getFilePathAttribute()
+    {
+        return storage_path('app/public/' . $this->file);
+    }
+
+    // Scope untuk mencari foto berdasarkan judul
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('judul', 'like', '%' . $search . '%')
+                    ->orWhere('catatan', 'like', '%' . $search . '%');
+    }
+
+    // Scope untuk mengurutkan foto berdasarkan tanggal terbaru
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', 'desc');
     }
 }
