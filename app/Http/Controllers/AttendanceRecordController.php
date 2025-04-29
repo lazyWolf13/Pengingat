@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class AttendanceRecordController extends Controller
 {
@@ -22,13 +24,6 @@ class AttendanceRecordController extends Controller
     public function absenMasuk(Request $request)
     {
         $request->validate([
-
-            'status' => 'required|in:Hadir,Sakit,Izin,Cuti', // tambahkan Cuti
-            'file_surat' => 'required_if:status,Sakit,Izin,Cuti|file|mimes:jpg,jpeg,png,pdf',
-            'keterangan' => 'required_if:status,Sakit,Izin,Cuti',
-            'local_time' => 'required|date_format:Y-m-d H:i:s',
-        ]);
-        
             'status' => 'required|in:Hadir,Izin,Cuti', // Hapus Sakit dari validasi
             'local_time' => 'required|date_format:Y-m-d H:i:s',
             'latitude' => 'required|numeric',
@@ -52,7 +47,7 @@ class AttendanceRecordController extends Controller
         }
 
         // Hitung apakah waktu check-in terlambat atau tepat waktu
-        $waktuCheckIn = Carbon::createFromFormat('Y-m-d H:i:s', $request->local_time);
+        $waktuCheckIn = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $request->local_time);
         $batasTepatWaktu = now()->setTime(8, 0, 0); // Jam 08:00 server time
 
         // Semua status akan dicek ketepatan waktunya
@@ -86,19 +81,38 @@ class AttendanceRecordController extends Controller
         return $R * $c;
     }
 
-    public function absenPulang()
-    {
-        $attendance = AttendanceRecord::where('user_id', auth()->id())
-                        ->whereDate('tanggal', now()->toDateString())
-                        ->first();
+    public function absenPulang(Request $request)
+{
+    $user = Auth::user();
 
-        if ($attendance && $attendance->status === 'Hadir' && !$attendance->waktu_check_out) {
-            // Update waktu check-out jika absen masuk dan belum absen pulang
-            $attendance->update(['waktu_check_out' => now()]);
-            return redirect()->route('user.attendance')->with('success', 'Absen pulang berhasil!');
+    $attendance = AttendanceRecord::where('user_id', $user->id)
+                            ->whereDate('created_at', Carbon::now()->toDateString())
+                            ->first();
+
+    if ($attendance && $attendance->status == 'hadir' && !$attendance->waktu_check_out) {
+        if ($request->filled('local_check_out')) {
+            $waktuPulang = Carbon::parse($request->input('local_check_out'))->setTimezone('Asia/Jakarta');
+            $attendance->waktu_check_out = $waktuPulang;
+
+            // Batas mulai hitung lembur: 16:30:00
+            $batasLembur = Carbon::today()->setTime(16, 30, 0);
+
+            // Jika pulang setelah 16:30
+            if ($waktuPulang->gt($batasLembur)) {
+                $durasiLembur = $waktuPulang->diff($batasLembur);
+                $attendance->durasi_lembur = $durasiLembur->format('%H:%I:%S');
+            } else {
+                $attendance->durasi_lembur = '00:00:00';
+            }
         }
-        return back()->with('error', 'Tidak memenuhi syarat untuk absen pulang.');
+
+        $attendance->save();
     }
+
+    return redirect()->back()->with('success', 'Absen pulang berhasil.');
+}
+
+
 
     public function history(Request $request)
     {
@@ -113,5 +127,4 @@ class AttendanceRecordController extends Controller
         $records = $query->get();
         return view('attendance_history', compact('records'));
     }
-}
 }
