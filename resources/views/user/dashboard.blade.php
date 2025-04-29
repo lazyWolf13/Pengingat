@@ -28,7 +28,7 @@
     <!-- Quick Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Absensi Hari Ini -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover-zoom">
+        <a href="{{ route('user.attendance') }}" class="block bg-white p-6 rounded-xl shadow-md hover-zoom">
             <div class="flex items-center justify-between">
                 <div class="p-3 bg-blue-100 rounded-full">
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,10 +42,10 @@
             </div>
             <h3 class="text-lg font-bold text-gray-700 mt-4">Absensi</h3>
             <p class="text-gray-500">08:00 WIB</p>
-        </div>
+        </a>
 
         <!-- Tugas Aktif -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover-zoom">
+        <a href="{{ route('user.pengingat') }}" class="block bg-white p-6 rounded-xl shadow-md hover-zoom">
             <div class="flex items-center justify-between">
                 <div class="p-3 bg-yellow-100 rounded-full">
                     <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,15 +54,15 @@
                     </svg>
                 </div>
                 <span class="text-sm font-semibold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full">
-                    5 Tugas
+                    {{ $totalTugas }} Tugas
                 </span>
             </div>
             <h3 class="text-lg font-bold text-gray-700 mt-4">Tugas Aktif</h3>
             <p class="text-gray-500">Perlu diselesaikan</p>
-        </div>
+        </a>
 
         <!-- Dokumen -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover-zoom">
+        <a href="{{ route('user.progress') }}" class="block bg-white p-6 rounded-xl shadow-md hover-zoom">
             <div class="flex items-center justify-between">
                 <div class="p-3 bg-purple-100 rounded-full">
                     <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,12 +71,12 @@
                     </svg>
                 </div>
                 <span class="text-sm font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
-                    12 Files
+                    {{ $totalProgress }} Files
                 </span>
             </div>
             <h3 class="text-lg font-bold text-gray-700 mt-4">Dokumen</h3>
-            <p class="text-gray-500">Dokumen aktif</p>
-        </div>
+            <p class="text-gray-500">Dokumen Terselesaikan</p>
+        </a>
 
         <!-- Notifikasi -->
         <div class="bg-white p-6 rounded-xl shadow-md hover-zoom">

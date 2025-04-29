@@ -20,6 +20,16 @@
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 8px;
     }
+
+    .active {
+        background-color: #059669;
+        color: white !important;
+        font-weight: 600;
+    }
+
+    .active:hover {
+        background-color: #047857;
+    }
     </style>
 </head>
 
@@ -48,29 +58,30 @@
             <!-- Menu Navigation -->
             <nav class="space-y-4">
                 <a href="{{ route('user.dashboard') }}"
-                    class="block py-3 px-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 shadow-md text-center mb-6">
+                    class="block py-3 px-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 shadow-md text-center mb-6 {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
                     🏠 Dashboard
                 </a>
                 <h3 class="text-gray-600 uppercase text-xs font-bold">Absensi</h3>
                 <a href="{{ route('user.attendance') }}"
-                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">📍 Absen Harian</a>
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->routeIs('user.attendance') ? 'active' : '' }}">📍
+                    Absen Harian</a>
                 <a href="{{ route('user.attendance_history') }}"
-                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">📅 Riwayat Absensi</a>
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->routeIs('user.attendance_history') ? 'active' : '' }}">📅
+                    Riwayat Absensi</a>
                 <h3 class="text-gray-600 uppercase text-xs font-bold">Tugas</h3>
                 <a href="{{ route('user.pengingat') }}"
-                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">✅
-                    Tugas Saya</a>
-                <a href="task_progress" class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">📊
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->routeIs('user.pengingat') ? 'active' : '' }}">✅
+                    Surat Masuk</a>
+                <a href="{{ route('user.progress') }}"
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->routeIs('user.progress') ? 'active' : '' }}">📊
                     Progress</a>
-                <h3 class="text-gray-600 uppercase text-xs font-bold">Dokumen</h3>
-                <a href="documents" class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">📁 Dokumen
-                    Saya</a>
-                <a href="shared_documents" class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">🔄
-                    Dokumen Bersama</a>
                 <h3 class="text-gray-600 uppercase text-xs font-bold">Pengaturan</h3>
-                <a href="profile" class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">👤 Profil
+                <a href="profile"
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->is('profile') ? 'active' : '' }}">👤
+                    Profil
                     Saya</a>
-                <a href="notifications" class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300">🔔
+                <a href="notifications"
+                    class="block py-2 px-4 text-green-700 rounded-lg hover:bg-green-300 {{ request()->is('notifications') ? 'active' : '' }}">🔔
                     Notifikasi</a>
                 <div class="pt-6">
                     <form method="POST" action="{{ route('logout') }}">

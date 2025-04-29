@@ -1,98 +1,111 @@
 @extends('layouts.dashboarduser')
 
-@section('content')
-<div class="container-fluid px-6 py-8">
-    <div class="max-w-6xl mx-auto">
+@section('title', 'Kirim Pengingat')
 
-        <!-- Form Card dengan Shadow & Animation -->
-        <div
-            class="bg-white rounded-xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
-            <form action="{{ route('user.form_pengingat.store') }}" method="POST" enctype="multipart/form-data">
+@section('content')
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Buat Pengingat Baru</h1>
+            <p class="mt-2 text-sm text-gray-600">Isi form di bawah ini untuk membuat pengingat baru</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <form action="{{ route('user.form_pengingat.store') }}" method="POST" enctype="multipart/form-data"
+                class="p-6 sm:p-8">
                 @csrf
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Kolom Kiri -->
-                    <div>
-                        <!-- User yang dituju -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-users text-blue-500"></i>
-                                    </div>
-                                    User yang dituju
+                <!-- Two Column Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- User Selection -->
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-users text-blue-600"></i>
                                 </div>
+                                User yang dituju
                             </label>
-                            <select id="user" name="user_ids[]" multiple="multiple"
-                                class="user-select w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
-                                <option></option> <!-- untuk placeholder kosong -->
-                                @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->full_name }}</option>
-                                @endforeach
-
-                            </select>
+                            <div class="relative">
+                                <select id="user" name="user_ids[]" multiple
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none bg-white">
+                                    @foreach($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->full_name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
                             @error('user_ids')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
                             @enderror
                         </div>
 
-
-                        <!-- Sifat Surat -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-tag text-blue-500"></i>
-                                    </div>
-                                    Sifat Surat
+                        <!-- Category Selection -->
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-tag text-blue-600"></i>
                                 </div>
+                                Sifat Surat
                             </label>
-                            <div class="space-y-2 bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 @foreach(['biasa', 'penting', 'kilat', 'rahasia', 'segera'] as $sifat)
                                 <label
-                                    class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                    class="relative flex items-center p-3 rounded-xl border border-gray-200 cursor-pointer hover:border-blue-500 transition-colors duration-200">
                                     <input type="radio" name="kategori" value="{{ $sifat }}"
-                                        {{ old('kategori') == $sifat ? 'checked' : '' }}
-                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                    <span class="text-gray-700">{{ ucfirst($sifat) }}</span>
+                                        {{ old('kategori') == $sifat ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="flex items-center justify-center w-full">
+                                        <span class="text-sm font-medium text-gray-700">{{ ucfirst($sifat) }}</span>
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-blue-500 pointer-events-none">
+                                    </div>
                                 </label>
                                 @endforeach
                             </div>
                             @error('kategori')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
                             @enderror
                         </div>
 
-                        <!-- Disposisi Surat -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-tasks text-blue-500"></i>
-                                    </div>
-                                    Disposisi Surat
+                        <!-- Disposition Selection -->
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-tasks text-blue-600"></i>
                                 </div>
+                                Disposisi Surat
                             </label>
-                            <div class="space-y-2 bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 @foreach(['diselesaikan', 'diperhatikan/monitor', 'dipedomani', 'diketahui', 'bahas
                                 dengan saya'] as $disposisi)
                                 <label
-                                    class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                    class="relative flex items-center p-3 rounded-xl border border-gray-200 cursor-pointer hover:border-blue-500 transition-colors duration-200">
                                     <input type="checkbox" name="disposisi[]" value="{{ $disposisi }}"
                                         {{ in_array($disposisi, old('disposisi', [])) ? 'checked' : '' }}
-                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                    <span class="text-gray-700">{{ ucfirst($disposisi) }}</span>
+                                        class="sr-only peer">
+                                    <div class="flex items-center justify-center w-full">
+                                        <span class="text-sm font-medium text-gray-700">{{ ucfirst($disposisi) }}</span>
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-blue-500 pointer-events-none">
+                                    </div>
                                 </label>
                                 @endforeach
                             </div>
                             @error('disposisi')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
@@ -100,44 +113,39 @@
                         </div>
                     </div>
 
-                    <!-- Kolom Kanan -->
-                    <div>
-                        <!-- Tanggal -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-calendar text-blue-500"></i>
-                                    </div>
-                                    Tanggal
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Date Selection -->
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-calendar text-blue-600"></i>
                                 </div>
+                                Tanggal Deadline
                             </label>
                             <input type="date" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                             @error('tanggal')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
                             @enderror
                         </div>
 
-
-                        <!-- Text -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-comment text-blue-500"></i>
-                                    </div>
-                                    Text (optional)
+                        <!-- Text Input -->
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-comment text-blue-600"></i>
                                 </div>
+                                Text (optional)
                             </label>
-                            <textarea name="text"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                placeholder="Text (optional)">{{ old('text') }}</textarea>
+                            <textarea name="text" rows="4"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                placeholder="Masukkan teks pengingat...">{{ old('text') }}</textarea>
                             @error('text')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
@@ -145,267 +153,162 @@
                         </div>
 
                         <!-- File Upload -->
-                        <div class="form-group transform transition-all duration-200">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-50 p-2 rounded-lg mr-2">
-                                        <i class="fas fa-file-upload text-blue-500"></i>
-                                    </div>
-                                    File document
+                        <div class="form-group">
+                            <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mr-3">
+                                    <i class="fas fa-file-upload text-blue-600"></i>
                                 </div>
+                                File document
                             </label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-all duration-200 cursor-pointer"
+                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-500 transition-colors duration-200 cursor-pointer"
                                 onclick="document.getElementById('file').click()">
                                 <div id="file-name" class="text-gray-500">
-                                    <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
-                                    <p>Klik untuk memilih file</p>
+                                    <i class="fas fa-cloud-upload-alt text-3xl mb-3"></i>
+                                    <p class="text-sm font-medium">Klik untuk memilih file</p>
+                                    <p class="text-xs text-gray-400 mt-1">Format yang didukung: PDF, DOC, DOCX</p>
                                 </div>
                             </div>
-                            <input type="file" id="file" name="file" class="hidden" onchange="displayFileName()">
+                            <input type="file" id="file" name="file" class="hidden"
+                                onchange="document.getElementById('file-name').innerHTML = this.files[0] ? `<i class='fas fa-file text-3xl mb-3'></i><p class='text-sm font-medium'>${this.files[0].name}</p><p class='text-xs text-gray-400 mt-1'>Format yang didukung: PDF, DOC, DOCX</p>` : `<i class='fas fa-cloud-upload-alt text-3xl mb-3'></i><p class='text-sm font-medium'>Klik untuk memilih file</p><p class='text-xs text-gray-400 mt-1'>Format yang didukung: PDF, DOC, DOCX</p>`">
                             @error('file')
-                            <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-2"></i>
                                 {{ $message }}
                             </p>
                             @enderror
                         </div>
-
-                        <!-- Buttons -->
-                        <div class="flex justify-end space-x-3 mt-6">
-                            <button type="button" onclick="clearFile()"
-                                class="inline-flex items-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transform hover:-translate-y-1 transition-all duration-200 hover:shadow text-sm">
-                                <i class="fas fa-times mr-2"></i>
-                                Clear
-                            </button>
-                            <button type="submit"
-                                class="inline-flex items-center px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-200 hover:shadow text-sm">
-                                <i class="fas fa-paper-plane mr-2"></i>
-                                Kirim
-                            </button>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 flex flex-col sm:flex-row justify-end gap-4">
+                    <a href="{{ route('user.dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                    <button type="button" onclick="clearForm()"
+                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-times mr-2"></i>
+                        Clear
+                    </button>
+                    <button type="submit"
+                        class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Kirim
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+function clearForm() {
+    // Clear file input
+    document.getElementById('file').value = '';
+    document.getElementById('file-name').innerHTML = `
+        <i class="fas fa-cloud-upload-alt text-3xl mb-3"></i>
+        <p class="text-sm font-medium">Klik untuk memilih file</p>
+        <p class="text-xs text-gray-400 mt-1">Format yang didukung: PDF, DOC, DOCX</p>
+    `;
+
+    // Clear user selection
+    $('#user').val(null).trigger('change');
+
+    // Clear radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+    });
+
+    // Clear checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Clear date input
+    document.querySelector('input[type="date"]').value = '';
+
+    // Clear textarea
+    document.querySelector('textarea').value = '';
+}
+
+// Inisialisasi Select2
 $(document).ready(function() {
-    $('.select2').select2({
-        placeholder: "Pilih user",
+    $('#user').select2({
+        placeholder: 'Cari dan pilih user...',
         allowClear: true,
         width: '100%',
         language: {
             noResults: function() {
-                return "Tidak ada hasil yang ditemukan";
-            },
-            searching: function() {
-                return "Mencari...";
+                return "User tidak ditemukan";
             }
         }
     });
-
-    // Set today's date as default
-    const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
-    $('input[type="date"]').val(formattedDate);
-});
-
-function displayFileName() {
-    const input = document.getElementById('file');
-    const fileName = input.files[0] ? input.files[0].name : 'Klik untuk memilih file';
-    document.getElementById('file-name').innerHTML = `
-        <i class="fas fa-file text-3xl mb-2"></i>
-        <p>${fileName}</p>
-    `;
-}
-
-function clearFile() {
-    document.getElementById('file').value = '';
-    document.getElementById('file-name').innerHTML = `
-        <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
-        <p>Klik untuk memilih file</p>
-    `;
-}
-
-// Form Group Animation
-document.querySelectorAll('.form-group').forEach(group => {
-    const input = group.querySelector('input, select, textarea');
-
-    if (input) {
-        input.addEventListener('focus', () => {
-            group.classList.add('scale-[1.02]');
-        });
-
-        input.addEventListener('blur', () => {
-            group.classList.remove('scale-[1.02]');
-        });
-    }
 });
 </script>
+@endpush
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-/* Smooth transitions */
-* {
-    transition: all 0.2s ease-in-out;
+/* Custom Select Styling */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none;
 }
 
-/* Input hover effect */
-input:hover,
-select:hover,
-textarea:hover {
-    border-color: #93C5FD;
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
 
-/* Error message animation */
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-5px);
-    }
-
-    75% {
-        transform: translateX(5px);
-    }
+select option {
+    padding: 0.5rem 1rem;
 }
 
-.text-red-600 {
-    animation: shake 0.5s ease-in-out;
+select option:checked {
+    background-color: #3b82f6;
+    color: white;
 }
 
-/* Form group hover effect */
-.form-group:hover {
-    transform: translateX(5px);
+select option:hover {
+    background-color: #e5e7eb;
 }
 
-/* Custom focus ring */
-input:focus,
-select:focus,
-textarea:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Button hover animation */
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* Card hover effect */
-.rounded-xl:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Select2 customization */
+/* Select2 Custom Styling */
 .select2-container--default .select2-selection--multiple {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 0.5rem !important;
-    padding: 0.25rem !important;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    min-height: 42px;
+    padding: 0.25rem;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #e5e7eb !important;
-    border: none !important;
-    color: #374151 !important;
-    border-radius: 0.25rem !important;
-    padding: 0.25rem 0.5rem !important;
-    margin: 0.25rem !important;
+    background-color: #3b82f6;
+    border: 1px solid #2563eb;
+    color: white;
+    border-radius: 9999px;
+    padding: 0.25rem 0.5rem;
+    margin: 0.25rem;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: #6b7280 !important;
-    margin-right: 0.5rem !important;
+    color: white;
+    margin-right: 0.5rem;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-    color: #ef4444 !important;
-    background: none !important;
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin-top: 0.5rem;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #3b82f6;
 }
 </style>
 @endpush
-
-@endsection
-=======
-@section('title', 'Pengingat')
-
-@section('content')
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Form Pengingat</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-</head>
-
-<body class="bg-gradient-to-br from-green-300 via-green-400 to-green-500 min-h-screen flex items-center justify-center relative">
-    <!-- Tombol Kembali -->
-    <a href="http://127.0.0.1:8000"
-        class="absolute top-4 left-4 p-2 rounded-full bg-white bg-opacity-80 hover:bg-opacity-100 shadow-md transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-    </a>
-
-    <div class="bg-green-50 bg-opacity-90 p-8 rounded-lg shadow-lg w-[900px] flex gap-8 border border-green-200">
-        <!-- Isi Form Pengingat -->
-        <form action="#" method="POST" class="w-full space-y-6">
-            @csrf
-            <div>
-                <label for="judul" class="block mb-2 text-sm font-medium text-green-900">Judul Pengingat</label>
-                <input type="text" id="judul" name="judul"
-                    class="bg-white border border-green-300 text-green-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5" required>
-            </div>
-
-            <div>
-                <label for="tanggal" class="block mb-2 text-sm font-medium text-green-900">Tanggal</label>
-                <input type="date" id="tanggal" name="tanggal"
-                    class="bg-white border border-green-300 text-green-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5" required>
-            </div>
-
-            <div>
-                <label for="deskripsi" class="block mb-2 text-sm font-medium text-green-900">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi" rows="4"
-                    class="bg-white border border-green-300 text-green-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
-                    required></textarea>
-            </div>
-
-            <div>
-                <label for="kategori" class="block mb-2 text-sm font-medium text-green-900">Kategori</label>
-                <select id="kategori" name="kategori"
-                    class="select2 bg-white border border-green-300 text-green-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5">
-                    <option value="">Pilih Kategori</option>
-                    <option value="Pekerjaan">Pekerjaan</option>
-                    <option value="Penting">Penting</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
-            </div>
-
-            <button type="submit"
-                class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-all">
-                Simpan Pengingat
-            </button>
-        </form>
-    </div>
-
-    <script>
-        $(document).ready(function () {
-            $('.select2').select2();
-        });
-    </script>
-</body>
-
-</html>
-@endsection
