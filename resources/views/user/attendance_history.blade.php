@@ -5,16 +5,6 @@
 <div class="bg-white shadow-lg rounded-lg p-6 mb-4">
     <h2 class="text-lg font-semibold mb-4">📜 Riwayat Absensi</h2>
     
-    <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
-        <select id="filterYear" class="border p-2 rounded w-full md:w-auto">
-            <option value="">Semua Tahun</option>
-            @foreach($years as $year)
-                <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
-            @endforeach
-        </select>
-        <button id="reload" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">🔄 Muat Ulang</button>
-    </div>
-    
     <div class="overflow-x-auto">
         <table id="attendanceTable" class="w-full border border-gray-200 rounded-lg text-left">
             <thead class="bg-gray-100">
